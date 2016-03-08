@@ -3,5 +3,5 @@
 
 ### 笔记列表
 
-    + [第五章 首次登陆与在线求助 man page](linux5_chapter.org)
+   + [第五章 首次登陆与在线求助 man page](linux5_chapter.org)
 
