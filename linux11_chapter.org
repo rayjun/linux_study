@@ -232,7 +232,8 @@ bash 就称之为 login shell
 
 login shell 会读取以下的两个配置文件:
 
-+ /etc/profile 这个是系统的整体配置，最好不要修改这个文件
++ /etc/profile 系统配置
+
 + ~/.bash_profile 或者 ~/.bash_login 或者 ~/.profile： 这些属于个人配置，如果需要修改数据，直接修改这里
 
 
@@ -252,3 +253,52 @@ login shell 会读取以下的两个配置文件:
   - /etc/profile.d/*.h
 
   - /etc/sysconfig/i18n
+
+
++ ~/.bash_profile(login 才会读)
+
+在读取完系统的配置文件之后，接下来就会读取个人的配置文件，按照以下的顺序:
+
+   + ~/.bash_profile
+   + ~/.bash_login
+   + ~/.profile
+
+实际上， bash shell 只会读取上面三个文件中的一个，读取顺序是依照上面的顺序。
+
+
++ source  读入环境变量配置的文件
+
++ ~/.bashrc (non login shell会读)
+
+
++ 其他相关配置文件
+
+  - /etc/man.config
+    这个文件里面规范了使用 man 的时候，man page 的路径
+
+  - ~/.bash_history
+
+  - ~/.bash_logout
+
+** 终端机的环境配置：stty， set
+
+** 通配符与特殊符号
+
+
+| 符号 | 含义                                                                                |
+|------+-------------------------------------------------------------------------------------|
+| *    | 代表 0 到无穷个任意字符                                                             |
+| ？   | 代表一定有一个任意字符                                                              |
+| []   | 代表一定有一个在括号内的字符, 例如[abcd]代表一定有一个字符，可能是 a,b,c,d 中的一个 |
+| [-]  | 代表在编码顺序内的所有字符，例如[0-9]代表0到9之间的所有数字                         |
+| [^]  | 若中括号内的第一个字符为 ^,则代表反向选择，例如 [^abc] 代表一个除了 a,b,c 以外的其他字符                                |
+* 数据流重定向
+  数据流重定向大致就是将某个命令运行后要出现在屏幕上的数据传输到其他的地方。
+
+** 什么是数据流重定向
+
+
+*** standard output 与 standard error output
+
+  + standard output 命令运行所回传的正确的信息
+  + standard error output 命令运行失败后所回传的错误信息
