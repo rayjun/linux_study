@@ -302,3 +302,17 @@ login shell 会读取以下的两个配置文件:
 
   + standard output 命令运行所回传的正确的信息
   + standard error output 命令运行失败后所回传的错误信息
+
+数据重定向将 standard output 与 standard error output 分别传送到其他的文件中去，
+
+
+| 输入   | 代码 | 符号      |
+|--------+------+-----------|
+| stdin  |    0 | < 或者 << |
+| stdout |    1 | > 或 >>   |
+| stderr |    2 | 2> 或者 2>> |
+
+
+*** /dev/null 存储错误信息
+
+    可以将错误信息通过数据流重定向的方法输入到 /dev/null 中。
