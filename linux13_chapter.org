@@ -39,3 +39,104 @@ shell scripts 其实就是利用 shell 的功能所写的一个程序，这个�
 
   + 直接下达命令：脚本必须要有可读和可运行的权限
   + 以 bash 程序来运行
+
+脚本编写流程：
+
+  + 第一行声明这个脚本使用的 bash 名称，例如 #!/bin/bash
+  + 程序内容的说明，除了第一行的 #! 之外，其他的 # 都是注释。程序说明使用注释来说明
+  + 主要环境变量的说明：建议在 script 中配置好环境变量，这样的话很多的程序就可以直接调用了
+  + 程序的主体
+  + 程序的返回值: 使用 exit 来返回
+
+
+编写脚本的良好习惯，在脚本的开始应该记录以下的信息:
+  + script 的功能
+  + script 的版本信息
+  + script 的作者与联络方式
+  + script 的版权宣告
+  + script 的历史信息
+  + script 内的特殊命令，使用绝对路径来下达
+  + script 运行时所需要的环境表露需要进行声明与配置
+
+** 简单的 shell 练习
+
+*** 简单例子
+
+**** 交互式脚本
+
+让用户输入变量，以下的例子是用户输入姓名：
+
+#+BEGIN_SRC shell
+#!/bin/bash
+# Program:
+#	User inputs his first name and last name.  Program shows his full name.
+# History:
+# 2005/08/23	VBird	First release
+PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
+export PATH
+
+read -p "Please input your first name: " firstname  # 提示使用者输入
+read -p "Please input your last name:  " lastname   # 提示使用者输入
+echo -e "\nYour full name is: $firstname $lastname" # 结果由萤幕输出
+
+
+**** 随日期变化来创建文件
+
+随时间的不同而创建文件，类似与日志文件的创建:
+
+#+BEGIN_SRC shell
+#!/bin/bash
+# Program:
+#	Program creates three files, which named by user's input
+#	and date command.
+# History:
+# 2005/08/23	VBird	First release
+PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
+export PATH
+
+# 1. 让使用者输入文件名称，并取得 fileuser 这个变量；
+echo -e "I will use 'touch' command to create 3 files." # 纯粹显示资讯
+read -p "Please input your filename: " fileuser         # 提示使用者输入
+
+# 2. 为了避免使用者随意按 Enter ，利用变量功能分析档名是否有配置？
+filename=${fileuser:-"filename"}           # 开始判断有否配置档名
+
+# 3. 开始利用 date 命令来取得所需要的档名了；
+date1=$(date --date='2 days ago' +%Y%m%d)  # 前两天的日期
+date2=$(date --date='1 days ago' +%Y%m%d)  # 前一天的日期
+date3=$(date +%Y%m%d)                      # 今天的日期
+file1=${filename}${date1}                  # 底下三行在配置档名
+file2=${filename}${date2}
+file3=${filename}${date3}
+
+# 4. 将档名创建吧！
+touch "$file1"                             # 底下三行在创建文件
+touch "$file2"
+touch "$file3"
+#+END_SRC
+
+
+数值运算：
+
+#+BEGIN_SRC shell
+
+#!/bin/bash
+# Program:
+#	User inputs 2 integer numbers; program will cross these two numbers.
+# History:
+# 2005/08/23	VBird	First release
+PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
+export PATH
+echo -e "You SHOULD input 2 numbers, I will cross them! \n"
+read -p "first number:  " firstnu
+read -p "second number: " secnu
+total=$(($firstnu*$secnu))
+echo -e "\nThe result of $firstnu x $secnu is ==> $total"
+
+#+END_SRC
+
+
+script 的运行方式的差异：
+
++ 直接运行 script ：这种方法下，系统会用一个子进程来运行脚本，脚本里面所有的变量在运行完了之后就会被销毁。
++ 利用 source 来运行脚本，这种方式是直接在父进程中运行脚本，这时脚本中所有的变量都会在 bash 中起作用
