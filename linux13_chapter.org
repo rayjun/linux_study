@@ -58,11 +58,12 @@ shell scripts 其实就是利用 shell 的功能所写的一个程序，这个�
   + script 内的特殊命令，使用绝对路径来下达
   + script 运行时所需要的环境表露需要进行声明与配置
 
-** 简单的 shell 练习
 
-*** 简单例子
+* 简单的 shell 练习
 
-**** 交互式脚本
+** 简单例子
+
+*** 交互式脚本
 
 让用户输入变量，以下的例子是用户输入姓名：
 
@@ -80,7 +81,7 @@ read -p "Please input your last name:  " lastname   # 提示使用者输入
 echo -e "\nYour full name is: $firstname $lastname" # 结果由萤幕输出
 
 
-**** 随日期变化来创建文件
+*** 随日期变化来创建文件
 
 随时间的不同而创建文件，类似与日志文件的创建:
 
@@ -140,3 +141,99 @@ script 的运行方式的差异：
 
 + 直接运行 script ：这种方法下，系统会用一个子进程来运行脚本，脚本里面所有的变量在运行完了之后就会被销毁。
 + 利用 source 来运行脚本，这种方式是直接在父进程中运行脚本，这时脚本中所有的变量都会在 bash 中起作用
+
+* 使用条件判断
+
+** 使用 test 来进行条件判断
+
+测试 test 文件夹是否存在：
+
+  #+BEGIN_SRC shell
+     test -e /test && echo "exist" || echo "Not exist"
+  #+END_SRC
+
+
+ | 参数              | 代表意义                                                                                   |
+ |-------------------+--------------------------------------------------------------------------------------------|
+ | -e                | 文档时候存在                                                                               |
+ | -f                | 文档是否存在而且类型为文件(file)                                                           |
+ | -d                | 该文档是否存在且是目录(directory)                                                          |
+ | -b                | 该文档是否存在且为 block device                                                            |
+ | -c                | 该文档是否存在且为 character device                                                        |
+ | -S                | 该文档是否存在且为一个 Socket 文件                                                         |
+ | -p                | 该文档是否存在且为一个 FIFO 文件                                                           |
+ | -L                | 该文档是否存在且为一个 链接档                                                              |
+ | -r                | 检测该文档是否存在且具有可读权限                                                           |
+ | -w                | 检测该文档是否存在且具有可写权限                                                           |
+ | -x                | 检测该文档是否存在且具有可运行权限                                                         |
+ | -u                | 检测该文档是否存在且具有suid 权限                                                          |
+ | -g                | 检测该文档是否存在且具有sgid 权限                                                          |
+ | -k                | 检测该文档是否存在且具有 sticky bit 权限                                                   |
+ | -s                | 检测该文档是否存在且为空白文件                                                             |
+ | -nt               | 判断 file1 是否比 file2 新                                                                 |
+ | -ot               | 判断 file1 是否比 file2 旧                                                                 |
+ | -ef               | 判断 file1 与 file2 是否为同一文件，主要判断两个文件是否都指向同一个 inode                 |
+ | -eq               | 两个数值相等， 例如 n1 -eq n2                                                              |
+ | -ne               | 两个数值不相等                                                                             |
+ | -gt               | n1 大于 n2                                                                                 |
+ | -lt               | n1 小于 n2                                                                                 |
+ | -ge               | n1 大于等于 n2                                                                             |
+ | -le               | n1 小于等于 n2                                                                             |
+ | test -z string    | 判断字符串是否为 0，若 string 为空字符串， 则为 true                                       |
+ | test -z string    | 判断字符串是否非为 0， 若 string 为空字符串，则返回 false， -n 也可以省略                  |
+ | test str1 = str2  | 判断 str1 是否等于 str2， 若相等，则返回 true                                              |
+ | test str1 != str2 | 判断 str1 是否不等于 str2 ，若相等，则返回 false                                           |
+ | -a                | and, 且 关系， 例如 test -r file -a -x file, 则 file 同时具有 r 与 x 的权限时，才返回 true |
+ | -o                | or ，test -r file -o -x file2 ，则 file 具有 r 或者 w 权限时，就会返回 true                |
+ | ！                | 取反， 如 test ! -x file, 当 file 不具有 x 时，返回 true                                               |
+
+下面的脚本实现了以下的功能：
+
+  1. 这个文件时候存在，若不存在就返回 "file does not exit"
+  2. 若这个文件存在，就判断类型是文件还是目录， 返回 "file is regular file" 或者 "file is  directory"
+  3. 判断一下，运行者的身份对这个文件所拥有的权限，
+
+  #+BEGIN_SRC shell
+     #!/bin/bash
+# Program:
+#	User input a filename, program will check the flowing:
+#	1.) exist? 2.) file/directory? 3.) file permissions
+# History:
+# 2005/08/25	VBird	First release
+PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
+export PATH
+
+# 1. 让使用者输入档名，并且判断使用者是否真的有输入字串？
+echo -e "Please input a filename, I will check the filename's type and \
+permission. \n\n"
+read -p "Input a filename : " filename
+test -z $filename && echo "You MUST input a filename." && exit 0
+# 2. 判断文件是否存在？若不存在则显示信息并结束脚本
+test ! -e $filename && echo "The filename '$filename' DO NOT exist" && exit 0
+# 3. 开始判断文件类型与属性
+test -f $filename && filetype="regulare file"
+test -d $filename && filetype="directory"
+test -r $filename && perm="readable"
+test -w $filename && perm="$perm writable"
+test -x $filename && perm="$perm executable"
+# 4. 开始输出资讯！
+echo "The filename: $filename is a $filetype"
+echo "And the permissions are : $perm"
+  #+END_SRC
+
+** 使用 [] 来进行判断
+
+   使用 [] 注意事项：
+   + 在中括号 [] 内的每个组件都需要空白键来分隔
+   + 在中括号内的变量，最好都以双引号括起来
+   + 在中括号内的常数，最好都以单或者双引号括起来
+
+** Shell script 的默认变量($0, $1)
+
+   运行脚本名称为 $0 这个变量， $1 对应第一个参数，以此类推。这些变量可以直接在脚本中调用:
+
+   + $# : 代表后面所接的参数的个数，
+   + $@ : 代表 ["$1" "$2" .....] 每个变量是独立的
+   + $* : 代表 ["$1 $2...."] 默认以空白键隔开
+
+*** shift 造成参数变量号码偏移
