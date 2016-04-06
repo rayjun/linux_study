@@ -142,7 +142,7 @@ script 的运行方式的差异：
 + 直接运行 script ：这种方法下，系统会用一个子进程来运行脚本，脚本里面所有的变量在运行完了之后就会被销毁。
 + 利用 source 来运行脚本，这种方式是直接在父进程中运行脚本，这时脚本中所有的变量都会在 bash 中起作用
 
-* 使用条件判断
+* 使用判断
 
 ** 使用 test 来进行条件判断
 
@@ -237,3 +237,62 @@ echo "And the permissions are : $perm"
    + $* : 代表 ["$1 $2...."] 默认以空白键隔开
 
 *** shift 造成参数变量号码偏移
+
+* 条件判断式
+
+** 利用 if...then
+
+*** 单层简单条件判断式
+
+    #+BEGIN_SRC shell
+      if [ 条件判断式 ]: then
+
+      fi
+    #+END_SRC
+
+*** 多重，复杂条件判断
+    #+BEGIN_SRC shell
+     if [ 条件判断式 ]: then
+
+     else
+
+     fi
+    #+END_SRC
+
+    或者
+
+    #+BEGIN_SRC shell
+      if [ 条件判断式一 ] : then
+
+      elis [ 条件判断式二 ] : then
+
+      fi
+    #+END_SRC
+
+** 利用 case.....esac 判断
+
+   #+BEGIN_SRC shell
+      case $变量名称 in
+          "第一个变量的名称" )
+
+                 ;;
+          "第二个变量的名称" )
+
+                 ;;
+           * )
+
+                 ;;
+      esac
+   #+END_SRC
+
+** 利用 function 功能
+
+shell script 的运行方式是由上而下，由左至右，所以 script 的 function 一定要在程序的最前面。
+
+#+BEGIN_SRC shell
+   function fname() {
+
+   }
+#+END_SRC
+
+ function 也是拥有内建变量的，与 shell script 很类似。
