@@ -296,3 +296,71 @@ shell script 的运行方式是由上而下，由左至右，所以 script 的 f
 #+END_SRC
 
  function 也是拥有内建变量的，与 shell script 很类似。
+
+* 循环
+
+** while do done, until do done
+
+   #+BEGIN_SRC shell
+     while [ condition ]
+     do
+
+
+     done
+   #+END_SRC
+
+   或者
+
+   #+BEGIN_SRC shell
+     until [ codition ]
+     do
+
+     done
+   #+END_SRC
+
+** for..do...done (固定循环)
+
+   #+BEGIN_SRC shell
+      for var in con1 con2 con3
+      do
+
+      done
+   #+END_SRC
+
+** for..do...done (数值处理)
+
+   #+BEGIN_SRC shell
+     for ((初始值 : 限制值：运行条件变化))
+     do
+
+     done
+   #+END_SRC
+
+
+   #+BEGIN_SRC shell
+    s = 0
+    nu = 12
+    for ((i = 1; i <= $nu; i = i + 1))
+    do
+         s = $(($s + Si))
+    done
+   #+END_SRC
+
+* shell script 的追踪与 debug
+
+| 参数 | 备注                                                |
+|------+-----------------------------------------------------|
+| -n   | 不运行 script ，仅查询语法的问题                    |
+| -v   | 在运行 script 前，先将 scripts 的内容输出到屏幕上   |
+| -x   | 将使用的 script 内容显示到屏幕上                                |
+
+
+#+BEGIN_SRC shell
+
+  sh -n scripts.sh
+
+  sh -v scripts.sh
+
+  sh -x scripts.sh
+
+#+END_SRC
