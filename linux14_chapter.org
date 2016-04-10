@@ -277,3 +277,7 @@ change shell 的意思：
 ** 什么是 ACL
 
 ACL 是 Access Control List 的缩写，主要的目的是在提供传统的 owner,group,others 的 read, write,execute 权限之外的权限配置。
+ACL 可以针对单一用户，单一文件或者目录来进行 r, w, x 的权限规范，对于需要特殊权限的使用状况非常有帮助。
+
+
+** 如何启动 ACL
