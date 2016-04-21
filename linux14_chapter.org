@@ -281,3 +281,42 @@ ACL 可以针对单一用户，单一文件或者目录来进行 r, w, x 的权�
 
 
 ** 如何启动 ACL
+大多数的 linux 的发行版本以及配置好了 ACL。
+
+** ACL 的配置技巧 (getfacl, setfacl)
+   + getfacl: 取得某个文件/目录的 ACL 配置项目
+   + setfacl: 配置某个文件/目录的 ACL 规范
+
+* 使用者身份切换
+
+  linux 的日常使用习惯:
+  + 使用一般帐号
+  + 用较低的权限启动系统服务
+  + 软件限制权限
+
+** su
+最简单的身份切换命令，但是需要 root 的密码。
+
+** sudo
+只有 /etc/sudoers 中的用户才可以运行 sudo 这个命令。
+
+sudo 的运行流程:
+
++ 当用户运行 sudo 时，系统在 /etc/sudoers 文件中搜寻该用户是否有运行 sudo 的权限
++ 若使用者具有可运行 sudo 的权限后，便让用户 输入自己的密码 来确认
++ 若密码输入成功，便开始进行 sudo 后续接的命令(root 运行 sudo 时，不需要输入密码)
++ 若想切换的身份是运行者身份相同时，也不需要密码。
+
+*** visudo 与 /etc/sudoers
+
+除了 root 以外的其他帐号，若想要使用 sudo 运行属于 root 的权限命令，则 root 需要先使用 visudo 修改 /etc/sudoers,
+让改帐号可以使用部分或者全部的 root 权限。visudo 可以检验配置完成后的语法，可以避免配置出错。
+
+*** sudo 搭配 su 的使用方式
+
+#+BEGIN_SRC shell
+  User_Alias ADMINS = user1,user2,user3
+  ADMINS ALL=(root) /bin/su -
+#+END_SRC
+
+使用这个方式，用户可以 利用 sudo su - 的方式，输入自己的密码，然后就变成了 root 的身份，而且 root 密码不会泄漏。
