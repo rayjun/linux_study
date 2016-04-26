@@ -327,5 +327,88 @@ sudo 的运行流程:
 
 使用了这个 shell 的用户即使有了口令，在想要登录时也无法登录。这里的无法登录是指，这个用户无法使用 bash 或者其他 shell 来登录系统。
 
-** PAM 模块简介
-PAM
+** PAM(Pluggable Authentication Modules) 模块简介
+PAM 可以简单的理解为一套应用程序编程接口，它提供了一系列的验证机制，只要使用者将验证阶段的需求告知 PAM 后，PAM 就能够回报使用者验证的结果。
+
+*** PAM 验证规则
+以 passwd 命令为例：
+
++ 用户开始运行 /usr/bin/passwd 这个程序之后，输入口令
++ passwd 就调用 PAM 模块进行验证
++ PAM 模块会到 /etc/pam.d/找寻与程序(passwd)同名的配置文件
++ 根据 /etc/pam.d/passwd 内的配置，引用相关的PAM 模块逐步进行验证分析
++ 将验证结果(成功、失败及其他信息)回传给 passwd 程序
++ passwd 会根据回传的结果进行下一步的动作。
+
+* Linux 主机上的用户信息传递
+
+如何与同时登录在主机上的用户交谈
+
+** 查询使用者 w,who,last,lastlog
+
++ w,who 查询目前已登录在系统上的用户。
++ lastlog 查询每个帐号最近登录的时间
+
+** 与当前登录的用户交谈 write,mesg,wall
+
+#+BEGIN_SRC shell
+  write 使用者帐号 [用户所在的终端接口]
+#+END_SRC
+
+不接收消息(但还是会接收 root 的消息)，如果是 root 这样设置了，那么所有的消息都不能发送到 root。
+
+#+BEGIN_SRC shell
+ mesg n
+#+END_SRC
+
+#+BEGIN_SRC shell
+ mesg y  #解开禁用消息状态
+ mesg    #查询当前是否接收消息
+#+END_SRC
+
+广播消息
+
+#+BEGIN_SRC shell
+  wall "message"
+#+END_SRC
+
+** 使用者的邮箱: mail
+
+一个帐号一个信箱。一般在 /var/spool/mail 中。
+
+发邮件:
+
+#+BEGIN_SRC shell
+mail user -s "subject"
+
+body...
+. # 这个点作为结束的符号
+
+#+END_SRC
+
+
+收信直接输入 mail 命令。
+
+* 手动增加用户
+
+一般不推荐手动增加用户。
+
+** 一些检查工具
+
++ pwck 用来检查 /etc/passwd 文件是否输入正确
++ pwconv 将 /etc/passwd 内的帐号与口令，移动到 /etc/shadow 中
++ pwunconv 将 /etc/shadow 内的口令数据写回到 /etc/passwd 中，并且删除 /etc/shadow 文件。
++ chpasswd 读入没有加密的密码，并且在经过加密后，将加密后的密码写入到 /etc/shadow 中
+
+
+
+** 特殊帐号，如纯数字帐号的手工创建
+
+不推荐纯数字帐号，因为系统很难区别这是帐号还是 UID。
+
+** 大量创建帐号的模板
+  利用脚本来批量的创建用户。
+
+** 大量创建帐号，适用于连续数字，比如学号
+
+同样也是通过脚本来创建。
