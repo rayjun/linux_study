@@ -22,3 +22,52 @@
    + RPM 软件的日志记录
    + 移除缓存文件
    + 与网络服务有关的分析行为
+
+* 仅运行一次的定时任务
+
+** atd 的启动与 at 运行的方式
+
+#+BEGIN_SRC shell
+  /etc/init.d/atd restart # 启动 atd
+#+END_SRC
+
+*** at 的运行方式
+ at 命令来产生所要运行的工作，并且将这个工作以文字的方式写入到 /var/spool/at/ 命令下，该工作边能等待 atd 合格服务的取用和运行。
+
++ 可以利用 /etc/at.allow 与 /etc/at.deny 来限制可以使用 at 的用户，只有在 /etc/at.allow 文件中的用户才能使用 at，(即使没有出现在 /etc/at.deny中)
++ 如果 /etc/at/allow 文件不存在，就寻找 /etc/at.deny 这个文件，出现在这个文件中的不能使用 at，没有出现在其中的可以使用 at
++ 如果两个文件都不存在，那么只有 root 可以使用 at
+
+
+*** 管理
+
++ atq 查询 at 任务
++ atrm 移除存在的任务
+
+* 周期性定时任务
+
+周期性定时任务是由 cron(crond)这个系统服务来控制的。可以使用 crontab 这个命令来创建定时任务。
+
+** 使用者配置
+
+ + /etc/cron.allow 与 /etc/cron.deny 的用法与 at 相同
+
+档 crontab 这个命令创建任务后，这个任务就会被记录到 /var/spool/cron/ 里面去：
+
+| 参数 | 备注                                                             |
+|------+------------------------------------------------------------------|
+| -u   | 只有 root 才能使用这个参数，帮助其他使用者创建/移除 crontab 任务 |
+| -e   | 编辑 crontab 任务                                                |
+| -l   | 查询 crontab 的内容                                              |
+| -r   | 移除所有的 crontab 任务                                                 |
+
+
+
+
+** 系统配置 /etc/crontab
+ crontab -e 是用户的周期任务，实际的文件在 /usr/bin/crontab，如果是系统的周期性任务，则需要编辑 /etc/crontab 文件。
+
+* 可唤醒停机期间的任务
+
+** anacron
+ anacron 在关机期间去检测关机期间应该进行但是并没有进行的任务，并将改任务运行一遍之后，anacron 就会停止
