@@ -1,0 +1,62 @@
+#+title:认识系统服务
+#+author:ray
+#+date:<2016-05-16 Mon>
+
+* 什么是 daemon 与 服务(service)
+常驻在内存中的程序，可以提供一些系统或者网络功能，那就是服务(service)。
+
+** daemon 的主要分类
+
+*** stand_alone daemon
+    此 daemon 可以自行单独启动服务
+
+*** super daemon
+    一支特殊的 daemon 来统一管理。当没有客户端的要求时，这些服务都是没有启动的，等到有来自客户端的请求时，super daemon 才会启动这些服务。
+    但是 super daemon 本身是常驻内存的。
+
+*** daemon 的工作形态的类型
+    如果以 daemon 提供服务的工作形态来分，又可以分成以下两类:
+    + singal-control 通过接收 singal 来进行工作
+    + interval-control 每隔一段时间就可以去运行某些工作
+
+
+
+** daemon 的启动脚本与启动方式
+
+   + /etc/init.d/*： 启动脚本的放置地方
+   + /etc/sysconfig/*： 各服务的初始化环境配置文件
+   + /etc/xinetd.conf, /etc/xinted.d/*: super daemon 的配置文件
+   + /etc/* : 各服务各自的配置文件
+   + /var/lib/*: 各服务产生的数据库
+   + /var/run/*: 各服务的程序的 PID 放置的地方
+
+* 解析 super daemon 的配置文件
+
+  super daemon 可以由 xinetd 这个程序来启动，而且 xinetd 这个程序可以用来进行安全性或者是其他管理机制的控制。
+
+** 默认的配置文件: xinetd.conf
+
+
+** 一个简单的 rsync 范例配置
+
+   同步两台主机上的某个文件夹。
+
+* 服务的防火墙管理 xinetd, TCP Wrappers
+
+一般来说，系统的防火墙分析主要可以通过封包过滤或者是通过软件分析。
+
+
+** /etc/hosts.allow, /etc/hosts.deny 管理
+
+   类似于 at 服务的管理，任何以 xinetd 管理的服务，都可以通过 /etc/host.allow ,/etc/hosts.deny 来配置防火墙。可以通过 TCP Wrappers 来控制:
+
+   + 来源 IP 或/与 整个网络的 IP 网段
+   + port(端口)
+
+** 配置文件语法
+
+** TCP Wrappers 特殊功能
+
+* 系统开启的服务(开机启动)
+
+可以通过 chkconfig 来管理系统服务开机启动与否。
