@@ -9,3 +9,4 @@
 
 #### 笔记
 - [鸟哥的 Linux 私房菜](VBird/README.md) 
+- [Linux 内核设计与实现](LKD/README.md)
