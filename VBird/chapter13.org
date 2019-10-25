@@ -1,4 +1,4 @@
-#+title: 第十四章 Linux 帐号管理与 ACL 权限配置
+#+title: 第十三章 Linux 帐号管理与 ACL 权限配置
 #+author: lemon
 #+date:<2016-04-07 Thu>
 
